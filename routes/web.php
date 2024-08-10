@@ -17,6 +17,7 @@ Route::get('/', function () {
     // ]);
     return Inertia::render('Auth/Login', [
         'canResetPassword' => Route::has('password.request'),
+        'canRegister' => Route::has('register'),
         'status' => session('status')
     ]);
 });

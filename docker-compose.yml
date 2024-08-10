@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  php:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+      args:
+        PHP_MODE: production
+    container_name: inertia_php
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www/inertia
+    depends_on:
+      - mysql
+      - httpd
+      - minio
+      - mailhog
+    networks:
+      - inertia_network
+  
+  httpd:
+    build:
+      context: .
+      dockerfile: ./docker/httpd/Dockerfile
+    container_name: inertia_httpd
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www/inertia
+      - ./docker/httpd/vhosts.conf:/etc/apache2/sites-available/vhosts.conf
+    depends_on:
+      - mysql
+      - minio
+      - mailhog
+    networks:
+      - inertia_network
+
+  mysql:
+    image: mysql:8.0.36
+    container_name: inertia_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: laravelinertia
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - inertia_database:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+    networks:
+      - inertia_network
+
+  minio:
+    image: minio/minio:RELEASE.2022-11-11T03-44-20Z
+    ports:
+      - "9001:9001"
+    container_name: inertia_minio
+    restart: unless-stopped
+    environment:
+      - MINIO_ROOT_USER=user
+      - MINIO_ROOT_PASSWORD=password
+    volumes:
+      - "./storage/app/s3_data:/tmp/s3_data"
+    command: server /tmp/s3_data --console-address ":9001"
+    networks:
+      - inertia_network
+  
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: inertia_mailhog
+    restart: unless-stopped
+    networks:
+      - inertia_network
+
+networks:
+  inertia_network:
+    driver: bridge
+
+volumes:
+  inertia_database:

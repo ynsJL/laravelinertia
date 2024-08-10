@@ -4,6 +4,8 @@ namespace App\Providers;
 
 // use Illuminate\Auth\Notifications\VerifyEmail;
 // use Illuminate\Notifications\Messages\MailMessage;
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -28,5 +30,12 @@ class AppServiceProvider extends ServiceProvider
         //         ->line('Click the button below to verify your email address.')
         //         ->action('Verify Email Address', $url);
         // });
+        Inertia::share([
+            'flash' => function () {
+                return [
+                    'success' => Session::get('success'),
+                ];
+            },
+        ]);
     }
 }

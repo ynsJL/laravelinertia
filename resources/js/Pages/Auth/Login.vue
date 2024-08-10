@@ -11,6 +11,9 @@ defineProps({
     canResetPassword: {
         type: Boolean,
     },
+    canRegister: {
+        type: Boolean,
+    },
     status: {
         type: String,
     },
@@ -37,13 +40,14 @@ const submit = () => {
             {{ status }}
         </div>
 
+        <div class="text-center text-white text-2xl mb-5">Castillon Management System</div>
+
         <form @submit.prevent="submit">
             <div>
                 <InputLabel for="email" value="Email" />
 
                 <TextInput
                     id="email"
-                    type="email"
                     class="mt-1 block w-full"
                     v-model="form.email"
                     autofocus
@@ -81,6 +85,14 @@ const submit = () => {
                     class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
                 >
                     Forgot your password?
+                </Link>
+
+                <Link
+                    v-if="canRegister"
+                    :href="route('register')"
+                    class="ml-2 underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
+                >
+                    Register
                 </Link>
 
                 <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">

@@ -55,8 +55,10 @@ class RegisteredUserController extends Controller
         // event(new Registered($user));
         SendMailService::sendEmail($subject, $sender, $recipient, $body, $template, $data);
 
-        Auth::login($user);
+        // Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        // return redirect(route('dashboard', absolute: false));
+
+        return redirect()->route('register')->with('success', 'Successfully registered the account');
     }
 }
